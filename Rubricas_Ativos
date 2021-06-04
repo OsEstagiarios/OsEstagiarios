@@ -1,0 +1,27 @@
+SELECT
+    r.rubrica,
+    r.nome
+FROM 
+    fichas_financeiras ff
+    
+    inner join fitabanco fb
+     on fb.numfunc = ff.numfunc
+    and fb.numvinc = ff.numvinc
+    and fb.numero = ff.num_folha
+    and fb.mes_ano = ff.mes_ano_folha
+    
+    inner join rubricas r
+    on r.rubrica = ff.rubrica
+    
+WHERE 
+    r.fat_vant = 1
+    --r.tiporubr = 'Vantagem'
+    AND ff.emp_codigo  = fb.emp_codigo
+    AND ff.mes_ano_folha = to_date('052021', 'mmyyyy')
+    AND fb.mes_ano = to_date('052021', 'mmyyyy')
+    AND substr(fb.setor, 1, 3) = 115
+    AND fb.dtaposent is null
+    AND fb.numdepen is null 
+    AND fb.numpens is null
+    group by r.rubrica, r.nome
+order by 1;
