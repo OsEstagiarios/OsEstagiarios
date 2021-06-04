@@ -1,0 +1,19 @@
+SELECT DISTINCT
+    ff.numfunc,
+    f.nome,
+    f.mae,
+    c.setor_3pos,
+    c.nomesetor,
+    ff.numvinc
+FROM
+    funcionarios f
+    
+    INNER JOIN fitabanco ff 
+    ON f.numero = ff.numfunc
+    
+    INNER JOIN cergrn_hsetor_secretaria c 
+    ON c.setor = ff.setor
+WHERE
+    f.mae IS NULL
+ORDER BY
+    c.nomesetor
