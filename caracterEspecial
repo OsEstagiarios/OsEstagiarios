@@ -1,0 +1,9 @@
+select distinct
+    fb.emp_codigo, 
+    F.NUMERO, 
+    F.NUMCARTPRO, 
+    F.SERCARTPRO 
+from 
+    funcionarios f join fitabanco fb 
+    on fb.numfunc = f.numero 
+where instr(F.SERCARTPRO, 'x') > 0;
