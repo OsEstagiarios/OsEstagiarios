@@ -1,0 +1,13 @@
+SELECT DISTINCT   
+    fb.numfunc, ff.nome, ff.nacionalidade
+FROM  
+    funcionarios ff inner join fitabanco fb 
+    ON fb.numfunc = ff.numero  
+WHERE 
+    ff.nacionalidade is null 
+    and fb.numpens is null
+    and fb.numdepen is null 
+    and fb.EMP_CODIGO = 1 
+    and fb.dtaposent is null
+    and fb.MES_ANO = TO_DATE('01/04/2021', 'dd/mm/yyyy')
+    ORDER BY 1;
