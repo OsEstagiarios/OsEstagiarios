@@ -1,0 +1,8 @@
+SELECT  
+    f.numero, 
+    (nvl(F.NUMCARTPRO,0)*10000+ nvl(F.SERCARTPRO,0)) CARTEIRA_PROFISSIONAL
+FROM 
+    funcionarios f,  fitabanco fb
+WHERE 
+    fb.MES_ANO BETWEEN TO_DATE('01/01/2020','DD/MM/YYYY') AND TO_DATE('01/12/2020','DD/MM/YYYY')
+    AND fb.EMP_CODIGO = 1;
