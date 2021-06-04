@@ -1,5 +1,5 @@
 
-<!-- Duas maneiras diferentes, verificar diferenças  -->
+<!-- Duas maneiras diferentes, verificar diferenças -->
 
 select distinct
     fb.emp_codigo, 
