@@ -1,5 +1,5 @@
 
-<!--  duas formas diferentes, ver diferenças -->
+<!-- três formas diferentes, ver diferenças -->
 
 SELECT 
     ef.numfunc, 
@@ -33,3 +33,29 @@ FROM
 WHERE 
     pispasep IS NULL
     and c.setor_3pos = 107;
+    
+    -----------------------------------------
+    
+    
+
+SELECT DISTINCT
+    ff.numfunc, 
+    ff.numvinc, 
+    f.nome, 
+    c.setor_3pos ,
+    c.nomesetor,
+    NVL(f.pispasep,'0')as pispasep
+FROM 
+    funcionarios f 
+    
+    INNER JOIN fitabanco ff 
+    on f.numero = ff.numfunc
+    
+    INNER JOIN CERGRN_HSETOR_SECRETARIA c
+    ON c.setor = ff.setor
+    
+WHERE 
+    pispasep IS NULL
+order by 4;
+
+-------------------------------------
