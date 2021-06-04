@@ -1,1 +1,11 @@
-
+SELECT 
+    nome, 
+    e_mail, 
+    substr(setor, 1,3), 
+    numfunc, 
+    numvinc, 
+    dtfim
+FROM 
+    ERGON.funcionarios  INNER JOIN ERGON.evento_func 
+    ON ergon.funcionarios.numero = ERGON.evento_func.numfunc 
+WHERE pispasep IS NULL AND dtfim IS NULL ;
