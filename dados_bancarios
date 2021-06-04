@@ -1,0 +1,15 @@
+SELECT
+    ff.cpf,
+    ff.nome,
+    ff.banco,
+    ff.agencia,
+    ff.conta,
+    ff.numero
+FROM
+    funcionarios ff
+    INNER JOIN fitabanco fb 
+    ON ff.numero = fb.numfunc
+    AND fb.mes_ano = TO_DATE('05/2021', 'mm/yyyy')
+WHERE
+    fb.numdepen IS NULL
+    AND fb.numpens IS NULL;
