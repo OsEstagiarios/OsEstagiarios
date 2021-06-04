@@ -1,0 +1,11 @@
+SELECT 
+    ef.numfunc, 
+    ef.numvinc, 
+    ff.nome, 
+    ff.e_mail, 
+    substr(ef.setor, 1,3) as SETOR, 
+    ef.dtfim
+ FROM 
+    ERGON.funcionarios ff INNER JOIN ERGON.evento_func ef
+    ON ff.numero = ef.numfunc 
+    WHERE ff.numrg IS NULL
