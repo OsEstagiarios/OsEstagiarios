@@ -1,4 +1,6 @@
 
+<!--  duas formas diferentes, ver diferenças -->
+
 SELECT 
     ef.numfunc, 
     ef.numvinc, 
@@ -12,3 +14,22 @@ FROM
 WHERE 
     ff.pispasep IS NULL 
     AND dtfim IS NULL ;
+    
+  ----------------------------------------------
+  
+    SELECT DISTINCT 
+    ff.numfunc, 
+    ff.numvinc, 
+    f.nome, 
+    c.setor_3pos,
+    c.nomesetor, 
+    f.pispasep 
+FROM 
+    funcionarios f INNER JOIN fitabanco ff 
+    on f.numero = ff.numfunc
+    
+    INNER JOIN CERGRN_HSETOR_SECRETARIA c
+    ON c.setor = ff.setor
+WHERE 
+    pispasep IS NULL
+    and c.setor_3pos = 107;
