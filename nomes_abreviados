@@ -1,0 +1,20 @@
+SELECT DISTINCT 
+    f.numero, 
+    fb.numvinc, 
+    chs.setor_3pos as SECRETARIA, 
+    chs.nomesetor, 
+    f.nome
+FROM  
+    funcionarios f 
+
+    inner join fitabanco fb
+    on f.numero = fb.numfunc
+      
+    inner join cergrn_hsetor_secretaria chs
+    on substr(fb.setor, 1, 3) = chs.setor_3pos
+    
+WHERE
+      instr(f.nome, '.') > 0 or 
+      REGEXP_INSTR(F.NOME, ' A | B | C | D | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z ') > 0
+order by 
+      chs.setor_3pos;
