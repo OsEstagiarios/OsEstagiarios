@@ -1,0 +1,19 @@
+SELECT DISTINCT
+    lpad(f.cpf, 11, 0),
+    f.pispasep,
+    fb.nome,
+    lpad(to_char(f.dtnasc, 'ddmmyyyy'), 8, '0')
+FROM
+    fitabanco fb
+    INNER JOIN funcionarios f 
+    ON f.numero = fb.numfunc
+    
+WHERE
+        fb.mes_ano = TO_DATE('052021', 'mmyyyy')
+    AND substr(fb.setor, 1, 3) = '101'
+    AND fb.numdepen IS NULL
+    AND fb.numpens IS NULL
+    AND fb.numero = 1
+    AND fb.subcategoria <> 'BOLSISTA'
+ORDER BY
+    3;
