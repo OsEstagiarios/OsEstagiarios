@@ -1,0 +1,44 @@
+SELECT DISTINCT
+   fb.nome, 
+   fb.numfunc as matrícula, 
+   ca.nome as cargo, 
+   chs.setor_abrev as orgão,
+   hs.nomesetor as lotação,
+   --GET_CHEFE_IMEDIATO(fb.setor),
+   to_char(ff.valor, 'fm99G999D00')        AS valor
+FROM 
+    fitabanco fb
+    
+    inner join folhas_emp fe
+    on fb.mes_ano = fe.mes_ano
+    and fb.numero = fe.numero
+    
+    inner join fichas_financeiras ff
+    on fb.numfunc = ff.numfunc
+    and fb.numvinc = ff.numvinc
+    and fb.numero = ff.num_folha
+    and fb.mes_ano = ff.mes_ano_folha
+    
+    inner join cargos_ ca
+    on fb.cargo = ca.cargo
+    
+    inner join cergrn_hsetor_secretaria chs
+    on substr(fb.setor, 1, 3) = chs.setor_3pos
+    
+    inner join hsetor hs
+    on fb.setor = hs.setor
+    
+WHERE 
+    fb.numdepen is null 
+    and fb.numpens is null
+    AND ff.rubrica in (287, 288)
+    AND ff.valor > 0
+    AND fe.mes_ano = TO_DATE('04/2021', 'mm/yyyy') 
+    AND fe.data_consol IS NOT NULL
+    AND fe.tipo_calculo = 'REAL'
+    AND fe.tipo_folha = 'NORMAL'
+    AND hs.datafim is null 
+    
+    order by 1, 5
+    ;
+    
