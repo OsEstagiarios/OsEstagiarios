@@ -1,3 +1,6 @@
+
+<!-- Duas maneiras diferentes, verificar diferenças  -->
+
 select distinct
     fb.emp_codigo, 
     F.NUMERO, 
@@ -7,3 +10,17 @@ from
     funcionarios f join fitabanco fb 
     on fb.numfunc = f.numero 
 where instr(F.SERCARTPRO, 'x') > 0;
+
+
+
+SELECT  
+      f.numero, 
+      F.NUMCARTPRO, 
+      F.SERCARTPRO 
+FROM
+ 	funcionarios f 
+WHERE
+	SERCARTPRO 
+LIKE  
+	'%58%'
+AND F.SERCARTPRO is not  null;
