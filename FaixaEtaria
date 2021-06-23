@@ -1,0 +1,31 @@
+SELECT hs.setor||' - '||hs.nomesetor SETOR,
+       CASE WHEN TRUNC(MONTHS_BETWEEN(SYSDATE,fu.dtnasc)/12) <= 40 THEN '01 - Até 40 anos' 
+            WHEN TRUNC(MONTHS_BETWEEN(SYSDATE,fu.dtnasc)/12) <= 50 THEN '02 - Até 50 anos' 
+            WHEN TRUNC(MONTHS_BETWEEN(SYSDATE,fu.dtnasc)/12) <= 60 THEN '03 - Até 60 anos' 
+                                                                   ELSE '04 - Acima de 60 anos' END FAIXA,
+       NVL(COUNT(CASE WHEN fu.sexo = 'M' THEN fb.numfunc END),0) QTD_MASCULINO,
+       NVL(COUNT(CASE WHEN fu.sexo = 'F' THEN fb.numfunc END),0) QTD_FEMININO
+  ---- OBJETOS ENVOLVIDOS PARA SELECIONAR OS DADOS
+  FROM FITABANCO fb -- Ler o Arquivo Bancário
+       -- Relacionando com a Folha Fechada do Mês (Garantia que são os dados corretos)
+       JOIN FOLHAS_EMP   fe ON fe.mes_ano = fb.mes_ano AND fe.numero = fb.numero AND fe.emp_codigo = fb.emp_codigo AND fe.data_consol IS NOT NULL
+       -- Relacionado com os Dados do Funcionário, para pegar informações de Idade e Sexo
+       JOIN FUNCIONARIOS fu ON fb.numfunc = fu.numero
+       -- Relacionado com a tabela de Setores, pra pegar o Nome do Lotação Atual do Servidor
+       JOIN HSETOR       hs ON hs.setor = fb.setor AND hs.emp_codigo = fb.emp_codigo AND hs.datafim IS NULL
+ ----- CRITÉRIOS DE SELEÇÃO
+ WHERE fb.mes_ano           = TO_DATE('062021','MMYYYY')                           -- Na Folha de Junho/2021
+   AND fb.numero            = 1                                                    -- Folha Normal
+   AND substr(fb.setor,1,3) = '107'                                                -- Da SEAD
+   AND fb.dtaposent         IS NULL                                                -- Somente os Ativos
+   AND fb.categoria         NOT IN ('PENSAO GRACIOSA','PENSAO JUDICIAL','ELETIVA') -- Exceto Casos Especiais
+   AND fb.numpens           IS NULL                                                -- Exceto Pensionistas
+   AND fb.numdepen          IS NULL                                                -- Exceto Dependentes
+   AND fb.valorvan          > 0                                                    -- Com Valor Bruto Maior que Zero
+ ----- EM CASO DE TOTALIZAÇÕES, SEMPRE AGRUPAR PELOS CAMPOS QUE NÃO FAZEM CÁLCULO
+ GROUP BY hs.setor||' - '||hs.nomesetor,
+          CASE WHEN TRUNC(MONTHS_BETWEEN(SYSDATE,fu.dtnasc)/12) <= 40 THEN '01 - Até 40 anos' 
+               WHEN TRUNC(MONTHS_BETWEEN(SYSDATE,fu.dtnasc)/12) <= 50 THEN '02 - Até 50 anos' 
+               WHEN TRUNC(MONTHS_BETWEEN(SYSDATE,fu.dtnasc)/12) <= 60 THEN '03 - Até 60 anos' 
+                                                                      ELSE '04 - Acima de 60 anos' END
+ ORDER BY 1,2;
