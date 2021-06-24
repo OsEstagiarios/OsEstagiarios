@@ -1,0 +1,34 @@
+SELECT DISTINCT
+    ca.nome,
+    CASE
+        WHEN ca.cargo_funcao = 'C' THEN
+            'CARGO'
+        ELSE
+            'FUNCAO'
+    END                                                       AS tipo,
+    COUNT(fb.numfunc)                                         AS qtd,
+    to_char(SUM(fb.valorvan), '999G999G999G999D99')           AS total_bruto
+FROM
+         fitabanco fb
+        INNER JOIN cargos_ ca ON ca.cargo = nvl(fb.cargo, fb.funcao)
+        
+WHERE
+        fb.mes_ano             = TO_DATE('06/2021', 'MM/YYYY')
+    AND fb.numero              = 1
+    AND substr(fb.setor, 1, 3) = '107'
+    AND fb.dtaposent           IS NULL
+    AND fb.categoria           NOT IN ( 'PENSAO GRACIOSA', 'PENSAO JUDICIAL', 'ELETIVA' )
+    AND fb.numpens             IS NULL
+    AND fb.numdepen            IS NULL
+    AND fb.valorvan            > 0
+    AND fb.dtvac               IS NULL
+GROUP BY
+    ca.nome,
+    CASE
+        WHEN ca.cargo_funcao = 'C' THEN
+            'CARGO'
+        ELSE
+            'FUNCAO'
+    END
+ORDER BY
+    1;
