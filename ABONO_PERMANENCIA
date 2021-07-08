@@ -1,0 +1,12 @@
+SELECT DISTINCT fb.numfunc AS matricula, fb.numvinc AS vinculo, fb.nome, ff.rubrica
+FROM fitabanco fb
+    INNER JOIN folhas_emp fe ON fb.mes_ano = fe.mes_ano AND fb.numero = fe.numero
+    INNER JOIN fichas_financeiras  ff ON fb.numfunc = ff.numfunc AND fb.numvinc = ff.numvinc AND fb.numero = ff.num_folha AND fb.mes_ano = ff.mes_ano_folha
+WHERE   ff.rubrica IN (209, 424, 110, 422)
+    AND fb.numdepen IS NULL
+    AND fb.numpens IS NULL
+    AND fe.mes_ano = TO_DATE('06/2021', 'mm/yyyy')
+    AND substr(fb.setor, 1, 3) = '101'
+    AND ff.valor > 0
+ORDER BY
+    1;
