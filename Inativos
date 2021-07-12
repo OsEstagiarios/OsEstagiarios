@@ -1,0 +1,16 @@
+SELECT DISTINCT fb.numfunc, fb.numvinc, first_value(fb.nome) OVER (partition by fb.numfunc), first_value(ca.nome) OVER (partition by fb.numfunc) AS CARGO, 
+                UPPER(COALESCE(vi.formavac, 'APOSENTADO')) AS MOTIVO, COALESCE(vi.dtvac, vi.dtaposent) AS "DATA"
+FROM fitabanco       fb
+     JOIN cargos_    ca    ON ca.cargo = nvl(fb.cargo, fb.funcao)
+     JOIN folhas_emp fe    ON fe.mes_ano = fb.mes_ano
+     JOIN vinculos   vi    ON vi.numfunc = fb.numfunc AND vi.numero = fb.numvinc 
+                           AND (vi.dtvac is not null AND vi.formavac in ('Falecimento', 'FALECIMENTO CLT', 'EXONERACAO DE OFICIO', 'EXONERACAO COMIS') 
+                                OR vi.dtaposent is not null AND vi.dtaposent >= TO_DATE('072020', 'mmyyyy'))
+     JOIN cargos_    ca    ON ca.cargo   = nvl(fb.cargo, fb.funcao)
+WHERE 
+        fb.categoria                = 'MAGISTERIO'
+    AND fb.mes_ano                  BETWEEN TO_DATE('062020', 'mmyyyy') AND TO_DATE('062021', 'mmyyyy')
+    AND fb.numero                   = 1 
+    AND fb.numpens                  is null
+    AND fb.numdepen                 is null
+ORDER BY 3, 1, 2;
