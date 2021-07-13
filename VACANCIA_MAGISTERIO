@@ -1,0 +1,28 @@
+SELECT fb.numfunc MATRÍCULA, fb.numvinc VÍNCULO, LTRIM(fb.nome) NOME, ca.nome CARGO, 'APOSENTADORIA' VACÂNCIA, TO_CHAR(fb.dtaposent,'DD/MM/YYYY') DATA
+  FROM FITABANCO fb
+       JOIN FOLHAS_EMP fe ON fe.mes_ano = fb.mes_ano AND fe.numero = fb.numero AND fe.emp_codigo = fb.emp_codigo AND fe.data_consol IS NOT NULL
+       JOIN CARGOS_    ca ON fb.cargo = ca.cargo
+ WHERE fb.mes_ano   = TO_DATE('062021','MMYYYY')
+   AND fb.numero    = 1
+   AND fb.categoria = 'MAGISTERIO'
+   AND fb.dtaposent >= SYSDATE - 365
+   AND fb.numpens   IS NULL 
+   AND fb.numdepen  IS NULL 
+   AND fb.valorvan  > 0   
+-----
+UNION
+-----
+SELECT fu.numero MATRÍCULA, vi.numero VÍNCULO, LTRIM(fu.nome) NOME, ca.nome CARGO, 
+       CASE WHEN vi.formavac  IN ('EXONERACAO','EXONERACAO COMIS','EXONERACAO DE OFICIO') THEN 'EXONERAÇÃO'
+                                                                                          ELSE 'FALECIMENTO' END VACÂNCIA,
+       TO_CHAR(vi.dtvac,'DD/MM/YYYY') DATA
+  FROM VINCULOS vi
+       JOIN EVENTO_FUNC  ef ON vi.numfunc = ef.numfunc
+                               AND ef.dtini = (SELECT MAX(e.dtini) from EVENTO_FUNC e WHERE e.numfunc = vi.numfunc)
+       JOIN FUNCIONARIOS fu ON ef.numfunc = fu.numero
+       JOIN CARGOS_      ca ON ef.cargo = ca.cargo
+ WHERE vi.categoria = 'MAGISTERIO'
+   AND vi.dtvac     >= SYSDATE - 365
+   AND vi.formavac  IN ('EXONERACAO','EXONERACAO COMIS','EXONERACAO DE OFICIO','Falecimento','FALECIMENTO CLT')
+------
+ ORDER BY 3;
