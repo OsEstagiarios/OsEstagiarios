@@ -1,0 +1,18 @@
+SELECT DISTINCT CASE WHEN ca.subcategoria like '%PROF%'     THEN 'PROFESSORES'
+                     WHEN ca.subcategoria not like '%PROF%' THEN 'ESPECIALISTAS'
+                                                            END CARGO,
+                NVL(COUNT(CASE WHEN ef.formaprov = 'PROGRESSAO' THEN fb.numfunc END), 0) PROGRESSAO_NORMAL,
+                NVL(COUNT(CASE WHEN ef.formaprov = 'PROGRESSAO DEC JUD' THEN fb.numfunc END), 0) PROGRESSAO_DECISAO_JUDICIAL
+FROM fitabanco fb
+     JOIN evento_func ef ON  ef.numfunc = fb.numfunc AND ef.numvinc = fb.numvinc AND ef.dtini >= SYSDATE - 365 AND ef.formaprov in ('PROGRESSAO', 'PROGRESSAO DEC JUD')
+     JOIN cargos_     ca ON  ca.cargo = nvl(fb.cargo, fb.funcao) AND ca.categoria = 'MAGISTERIO'
+     JOIN folhas_emp  fe ON  fe.mes_ano = fb.mes_ano AND fe.numero = fb.numero AND fe.mes_ano = TO_DATE('062021', 'mmyyyy')
+WHERE                                                                                     
+        fb.categoria                                = 'MAGISTERIO'
+    AND fb.mes_ano                                  = TO_DATE('062021', 'mmyyyy')
+    AND fb.numero                                   = 1
+    AND fb.numpens                                  is null
+    AND fb.numdepen                                 is null
+GROUP BY CASE WHEN ca.subcategoria like '%PROF%'        THEN 'PROFESSORES'
+              WHEN ca.subcategoria not like '%PROF%'    THEN 'ESPECIALISTAS'
+                                                        END;
