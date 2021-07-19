@@ -1,18 +1,7 @@
-SELECT
-    r.rubrica,
-    r.nome
-FROM 
-    fichas_financeiras ff
-    
-    inner join fitabanco fb
-     on fb.numfunc = ff.numfunc
-    and fb.numvinc = ff.numvinc
-    and fb.numero = ff.num_folha
-    and fb.mes_ano = ff.mes_ano_folha
-    
-    inner join rubricas r
-    on r.rubrica = ff.rubrica
-    
+SELECT r.rubrica, r.nome
+FROM fichas_financeiras ff
+     JOIN fitabanco     fb ON fb.numfunc = ff.numfunc AND fb.numvinc = ff.numvinc AND fb.numero = ff.num_folha AND fb.mes_ano = ff.mes_ano_folha
+     JOIN rubricas       r ON r.rubrica = ff.rubrica
 WHERE 
     r.fat_vant = 1
     --r.tiporubr = 'Vantagem'
@@ -23,5 +12,5 @@ WHERE
     AND fb.dtaposent is null
     AND fb.numdepen is null 
     AND fb.numpens is null
-    group by r.rubrica, r.nome
-order by 1;
+    GROUP BY r.rubrica, r.nome
+ORDER BY 1;
