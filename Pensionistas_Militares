@@ -1,0 +1,65 @@
+-- GASTO TOTAL COM PENSIONISTAS DE MILITARES POR MÊS 
+-- Meu código
+SELECT CASE WHEN substr(ef.setor, 1, 3) = '114' THEN 'PM'
+                                                ELSE 'CBM'
+                                                END PENSIONISTAS,
+       to_char(SUM(fb.valorvan), '999G999G999G999D99') VALOR,
+       COUNT(*)
+FROM fitabanco        fb 
+     JOIN evento_func ef ON ef.numfunc = fb.numfunc AND ef.formaprov = 'NOMEACAO' 
+                         AND  substr(ef.setor, 1, 3) in ('114', '132')
+WHERE    fb.mes_ano = TO_DATE('07/2021', 'mm/yyyy') 
+     AND fb.categoria = 'PM'
+     AND substr(fb.setor, 1, 3) = '219'
+     AND fb.numpens IS NOT NULL
+     AND fb.numdepen is null
+     AND fb.valorvan > 0
+     AND fb.numero = 2
+GROUP BY CASE WHEN substr(ef.setor, 1, 3) = '114' THEN 'PM'
+                                                ELSE 'CBM'
+                                                END;
+-- Codigo de Aldo 
+
+SELECT 'PM' ÓRGÃO, to_char(SUM(fb.valorvan), '999G999G999G999D99') TOTAL
+  FROM FITABANCO fb
+       JOIN FOLHAS_EMP  fe ON fe.mes_ano = fb.mes_ano AND fe.numero = fb.numero AND fe.emp_codigo = fb.emp_codigo AND fe.data_consol IS NOT NULL
+       JOIN EVENTO_FUNC ef ON ef.numfunc = fb.numfunc AND ef.formaprov = 'NOMEACAO' AND  substr(ef.setor, 1, 3) = '114'
+ WHERE fb.mes_ano           = TO_DATE('072021','MMYYYY')
+   AND fb.numero            = 2
+   AND fb.numpens           IS NOT NULL 
+   AND fb.numdepen          IS NULL 
+   AND fb.valorvan          > 0
+   AND fb.categoria         = 'PM'
+ GROUP BY 'PM'
+------
+ UNION ALL
+------
+SELECT 'BOMBEIROS' ÓRGÃO, to_char(SUM(fb.valorvan), '999G999G999G999D99') TOTAL
+  FROM FITABANCO fb
+       JOIN FOLHAS_EMP fe  ON fe.mes_ano = fb.mes_ano AND fe.numero = fb.numero AND fe.emp_codigo = fb.emp_codigo AND fe.data_consol IS NOT NULL
+       JOIN EVENTO_FUNC ef ON ef.numfunc = fb.numfunc AND ef.formaprov = 'NOMEACAO' AND substr(ef.setor, 1, 3) = '132'
+ WHERE fb.mes_ano           = TO_DATE('072021','MMYYYY')
+   AND fb.numero            = 2
+   AND fb.numpens           IS NOT NULL 
+   AND fb.numdepen          IS NULL 
+   AND fb.valorvan          > 0
+   AND fb.categoria         = 'PM'
+ GROUP BY 'BOMBEIROS'
+------
+ ORDER BY 1; 
+ 
+ -- RELAÇÃO NOMINAL DE TODOS OS PENSIONISTAS DE MILITARES QUE RECEBERAM EM DETERMINADO MÊS 
+ --Meu codigo
+ SELECT DISTINCT fb.nome AS PENSIONISTA, to_char(fb.valorvan, '999G999G999G999D99') AS BENEFICIO, ff.nome AS FUNCIONARIO
+FROM fitabanco         fb 
+     JOIN evento_func  ef ON ef.numfunc = fb.numfunc AND ef.formaprov = 'NOMEACAO' 
+                          AND  substr(ef.setor, 1, 3) in ('114', '132')
+     JOIN funcionarios ff ON ff.numero = fb.numfunc
+WHERE    fb.mes_ano             = TO_DATE('07/2021', 'mm/yyyy') 
+     AND fb.categoria           = 'PM'
+     AND substr(fb.setor, 1, 3) = '219'
+     AND fb.valorvan            > 0
+     AND fb.numpens             IS NOT NULL
+     AND fb.numdepen            is null
+     AND fb.numero              = 2
+ORDER BY 3;
