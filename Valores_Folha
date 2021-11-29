@@ -1,57 +1,45 @@
 SELECT TO_CHAR(fb.MES_ANO,'YYYY/MM') ANO_MES,FE.TIPO_FOLHA,CATEGORIA,COUNT(*),SUM(VALORVAN) VALORVAN,
 SUM(
-(SELECT sum(ff.VALOR) 
-  FROM FICHAS_FINANCEIRAS FF
-  inner join folhas_emp fe on  FE.mes_ano=fF.MES_ANO_FOLHA
-                           and fe.numero =fF.NUM_FOLHA
-                           AND FE.DATA_CONSOL IS NOT NULL
-           		           and fe.EMP_CODIGO = fF.EMP_CODIGO  
-   WHERE 1=1
-   and ff.MES_ANO_FOLHA = TO_DATE('02/2020','MM/YYYY')
-   AND ff.NUMFUNC=fb.NUMfunc
-   AND ff.NUMVINC=fb.NUMVINC
-   AND ff.NUMPENS=fb.NUMPENS    
-   AND FF.NUM_FOLHA = 2
-   and FF.RUBRICA IN (819))) PATRONAL,
-   
-   SUM(
-(SELECT sum(ff.VALOR) 
-  FROM FICHAS_FINANCEIRAS FF
-  inner join folhas_emp fe on  FE.mes_ano=fF.MES_ANO_FOLHA
-                           and fe.numero =fF.NUM_FOLHA
-                           AND FE.DATA_CONSOL IS NOT NULL
-           		           and fe.EMP_CODIGO = fF.EMP_CODIGO  
-   WHERE 1=1
-   and ff.MES_ANO_folha = TO_DATE('02/2020','MM/YYYY')
-   AND ff.NUMFUNC=fb.NUMfunc
-   AND ff.NUMVINC=fb.NUMVINC
-   AND ff.NUMPENS=fb.NUMPENS    
-   AND FF.NUM_FOLHA = 2
-   and FF.RUBRICA IN (502)))  VALOR_IR,
-   
+(SSELECT TO_CHAR(fb.MES_ANO,'YYYY/MM') ANO_MES,FE.TIPO_FOLHA,CATEGORIA,COUNT(*),SUM(VALORVAN) VALORVAN,
 SUM(
-  (SELECT sum(ff.VALOR) 
+(SELECT SUM(ff.VALOR) 
   FROM FICHAS_FINANCEIRAS FF
-  inner join folhas_emp fe on  FE.mes_ano=fF.MES_ANO_FOLHA
-                           and fe.numero =fF.NUM_FOLHA
-                           AND FE.DATA_CONSOL IS NOT NULL
-           		           and fe.EMP_CODIGO = fF.EMP_CODIGO  
-   WHERE 1=1
-   and ff.MES_ANO_FOLHA = TO_DATE('02/2020','MM/YYYY') 
+       JOIN folhas_emp fe ON  FE.mes_ano=fF.MES_ANO_FOLHA AND fe.numero =fF.NUM_FOLHA AND FE.DATA_CONSOL IS NOT NULL AND fe.EMP_CODIGO = fF.EMP_CODIGO  
+WHERE  1=1
+   AND ff.MES_ANO_FOLHA = TO_DATE('02/2020','MM/YYYY')
    AND ff.NUMFUNC=fb.NUMfunc
    AND ff.NUMVINC=fb.NUMVINC
    AND ff.NUMPENS=fb.NUMPENS    
    AND FF.NUM_FOLHA = 2
-   and FF.RUBRICA IN (534))) IPE_PENSIONISTA
+   AND FF.RUBRICA IN (819))) PATRONAL,
 
-  from fitabanco fb
-  
-  inner join folhas_emp fe   on FE.mes_ano=fB.MES_ANO
-                            and fe.numero =fB.NUMERO
-	                        AND FE.DATA_CONSOL IS NOT NULL
-    					    and fe.EMP_CODIGO = fB.EMP_CODIGO		
-  
- where  1=1
+SUM(
+(SELECT SUM(ff.VALOR) 
+  FROM FICHAS_FINANCEIRAS FF
+       JOIN folhas_emp fe ON  FE.mes_ano=fF.MES_ANO_FOLHA AND fe.numero =fF.NUM_FOLHA AND FE.DATA_CONSOL IS NOT NULL AND fe.EMP_CODIGO = fF.EMP_CODIGO  
+WHERE  1=1
+   AND ff.MES_ANO_folha = TO_DATE('02/2020','MM/YYYY')
+   AND ff.NUMFUNC=fb.NUMfunc
+   AND ff.NUMVINC=fb.NUMVINC
+   AND ff.NUMPENS=fb.NUMPENS    
+   AND FF.NUM_FOLHA = 2
+   AND FF.RUBRICA IN (502)))  VALOR_IR,
+
+SUM(
+(SELECT SUM(ff.VALOR) 
+  FROM FICHAS_FINANCEIRAS ff
+       JOIN FOLHAS_EMP fe ON  fe.mes_ano=fF.MES_ANO_FOLHA AND fe.numero = ff.NUM_FOLHA AND fe.DATA_CONSOL IS NOT NULL AND fe.EMP_CODIGO = ff.EMP_CODIGO  
+WHERE  1=1
+   AND ff.MES_ANO_FOLHA = TO_DATE('02/2020','MM/YYYY') 
+   AND ff.NUMFUNC=fb.NUMfunc
+   AND ff.NUMVINC=fb.NUMVINC
+   AND ff.NUMPENS=fb.NUMPENS    
+   AND FF.NUM_FOLHA = 2
+   AND FF.RUBRICA IN (534))) IPE_PENSIONISTA
+
+FROM FITABANCO fb
+     JOIN FOLHAS_EMP fe ON FE.mes_ano=fB.MES_ANO AND fe.numero =fB.NUMERO AND FE.DATA_CONSOL IS NOT NULL AND fe.EMP_CODIGO = fB.EMP_CODIGO		
+WHERE  1=1
    and fb.MES_ANO = TO_DATE('02/2020','MM/YYYY')  
    and ((fb.NUMERO  = 2) OR (FE.TIPO_FOLHA='13 SAL')) 
    AND FB.VALORLIQ>0 
